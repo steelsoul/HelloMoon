@@ -1,12 +1,14 @@
 package com.bignerdranch.android.hellomoon;
 
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import java.io.IOException;
 
 /**
  * class HelloMoonFragment
@@ -16,7 +18,10 @@ import android.widget.Button;
 public class HelloMoonFragment extends Fragment {
     private Button mPlayButton;
     private Button mStopButton;
-    private AudioPlayer mPlayer = new AudioPlayer();
+    private Button mPauseButton;
+    private SurfaceView mVideoView;
+    private VideoPlayer mPlayer = new VideoPlayer();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -26,7 +31,11 @@ public class HelloMoonFragment extends Fragment {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPlayer.play(getActivity());
+                try {
+                    mPlayer.play(getActivity(), mVideoView.getHolder());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         mStopButton = (Button)v.findViewById(R.id.hellomoon_stopButton);
@@ -36,7 +45,14 @@ public class HelloMoonFragment extends Fragment {
                 mPlayer.stop();
             }
         });
-
+        mPauseButton = (Button)v.findViewById(R.id.hellomoon_pauseButton);
+        mPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPlayer.pause();
+            }
+        });
+        mVideoView = (SurfaceView) v.findViewById(R.id.video_surface);
         return v;
     }
 
